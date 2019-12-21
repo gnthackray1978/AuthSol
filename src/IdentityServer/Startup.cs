@@ -72,35 +72,16 @@ namespace IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
           
             services.AddControllersWithViews();
-            services.AddRazorPages().AddSessionStateTempDataProvider();
-
-             
+            services.AddRazorPages().AddSessionStateTempDataProvider();             
             services.AddSession();
-
-
             services.AddAuthorization();
-
-          //  services.AddDbContext<ApplicationDbContext>(builder =>
-          //   builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
-
 
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ApplicationDbContext>(builder =>
              builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
-
- 
-
-           
-            //using (var context = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>()))
-            //{
-            //    context.Users.Add(new AppUser() { Id = DateTime.Now.Ticks.ToString(), FirstName = "bob", LastName = "smith" });
-
-            //    context.SaveChanges();
-            //}
 
             var builder = services.AddIdentityServer()
                 .AddConfigurationStore(options =>
@@ -118,8 +99,7 @@ namespace IdentityServer
                     // this enables automatic token cleanup. this is optional.
                     options.EnableTokenCleanup = true;
                 });
-                //.AddAspNetIdentity<IdentityUser>();
-
+                
             if (Environment.IsDevelopment())
             {
                 builder.AddDeveloperSigningCredential();
@@ -132,7 +112,6 @@ namespace IdentityServer
             services.AddAuthentication()
                 .AddGoogle("Google", options =>
                 {
-                   
                     //options.Scope
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                     options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
@@ -144,8 +123,6 @@ namespace IdentityServer
 
                     options.Events.OnCreatingTicket = ctx =>
                     {
-
-                        
                         List<AuthenticationToken> tokens = ctx.Properties.GetTokens().ToList();
 
                         tokens.Add(new AuthenticationToken()
@@ -163,29 +140,14 @@ namespace IdentityServer
                     options.AccessType = "offline";
                     options.SaveTokens = true;
                 })
-                //.AddOpenIdConnect("oidc", "OpenID Connect", options =>
-                //{
-                //    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                //    options.SignOutScheme = IdentityServerConstants.SignoutScheme;
-                //    options.SaveTokens = true;
-                //    options.RequireHttpsMetadata = false;
-                //    options.Authority = "http://localhost:5000";
-                //    options.ClientId = "implicit";
 
-                //    //options.TokenValidationParameters = new TokenValidationParameters
-                //    //{
-                //    //    NameClaimType = "name",
-                //    //    RoleClaimType = "role"
-                //    //};
-                //})
                 .AddJwtBearer("Bearer", options =>
                 {
                     options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
-
                     options.Audience = "api1";
-                })
-                 ; 
+                });
+                
 
             services.AddCors(options =>
             {
@@ -198,9 +160,7 @@ namespace IdentityServer
                         .AllowAnyMethod();
                 });
             });
-
-        //    services.AddIdentity<AppUser, IdentityRole>()
-           //         .AddEntityFrameworkStores<ApplicationDbContext>();
+             
         }
 
         public void Configure(IApplicationBuilder app)
