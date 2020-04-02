@@ -19,7 +19,7 @@ namespace Api
                 .AddNewtonsoftJson();
 
          
-
+            //5000 was the auth server
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
@@ -29,6 +29,7 @@ namespace Api
                     options.Audience = "api1";
                 });
 
+            //5003 was the client
             services.AddCors(options =>
             {
                 // this defines a CORS policy called "default"

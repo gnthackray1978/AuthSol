@@ -32,19 +32,7 @@ using System.IO;
 
 namespace IdentityServer.Quickstart.Account
 {
-    public class RefreshToken
-    {
-        public string access_token { get; set; }
-
-        public int expires_in { get; set; }
-        
-        public string scope { get; set; }
-
-        public string token_type { get; set; }
-
-        public string id_token { get; set; }
-
-    }
+    
 
     [Route("token")]
     [Authorize]
@@ -68,7 +56,7 @@ namespace IdentityServer.Quickstart.Account
             // this is where you would plug in your own custom identity management library (e.g. ASP.NET Identity)
             _users = users;// ?? 
 
-            var t = new TestUserStore(TestUsers.Users);
+          //  var t = new TestUserStore(TestUsers.Users);
             _interaction = interaction;
             _clientStore = clientStore;
             _events = events;
@@ -165,13 +153,10 @@ namespace IdentityServer.Quickstart.Account
         {
 
             var response = HttpContext.Response;
-
-            // Setting DefaultAuthenticateScheme causes User to be set
-            // var user = context.User;
-
+ 
             // This is what [Authorize] calls
             var userResult = await HttpContext.AuthenticateAsync("Bearer");
-          //  var user = userResult.Principal;
+          
             var authProperties = userResult.Properties;
  
             if (userResult?.Succeeded != true)
@@ -187,7 +172,7 @@ namespace IdentityServer.Quickstart.Account
                 token = _users.Tokens.OrderByDescending(o => o.Id).FirstOrDefault(f => f.UserId == user.Id);
             }
 
-           // var options = await GetOAuthOptionsAsync(HttpContext, GoogleDefaults.AuthenticationScheme);
+         
             var options = await Task.FromResult<OAuthOptions>(HttpContext.RequestServices.GetRequiredService<IOptionsMonitor<GoogleOptions>>().Get(GoogleDefaults.AuthenticationScheme));
            
             var pairs = new Dictionary<string, string>()
